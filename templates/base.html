@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+<head>
+	<title>Gates Grants Visualizer</title>
+
+	{# Bootstrap 3 Styles #}
+	<link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+
+	{# Jquery #}
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+
+	{# Bootstrap 3 Javascript #}
+	<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+
+	{# D3 #}
+	<script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.4.2/d3.js"></script>
+
+	{% block extrahead %}
+		
+	{% endblock extrahead %}
+
+</head>
+<body>
+	{% include "partials/_nav.html" %}
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-xs-12">
+				{% block page_body %}{% endblock page_body %}
+			</div>
+		</div>
+	</div>
+	{# include footer #}
+
+	{% block bottom_js %}
+		
+	{% endblock bottom_js %}
+</body>
+</html>

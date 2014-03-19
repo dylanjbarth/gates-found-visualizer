@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+
+{% block page_title %}
+	Amount By Year
+{% endblock page_title %}
+
+{% block extrahead %}
+	<style type="text/css">
+		.chart {
+			/*border: 1px solid red;*/
+		}
+
+		.chart rect {
+			fill: steelblue;
+		}
+
+		.chart text {
+			fill: black;
+			font: 10px sans-serif;
+			text-anchor: middle;
+		}
+
+		.axis text {
+			font: 10px sans-serif;
+		}
+
+		.axis path, .axis line {
+			fill: none;
+			stroke: #000;
+			shape-rendering: crispEdges;
+		}
+
+	</style>
+{% endblock extrahead %}
+
+{% block page_body %}
+
+<h1>Total Amounts Granted By Year</h1>
+
+{# Chart inserted dynamically here #}
+<svg class="chart"></svg>
+
+<p>Note:</p>
+<ul>
+	<li><small>
+		Amounts from 2009 and earlier not included
+	</small></li>
+	<li><small>
+		2014 data is current up to March 1.
+	</small></li>
+</ul>
+
+{% endblock page_body %}
+
+{% block bottom_js %}
+<script type="text/javascript">
+	// Get the data
+	var amount_by_year = {{ amount_by_year|safe }}
+
+	window.amount_by_year = amount_by_year;
+
+	// paddings
+	var margin = {top: 20, right: 30, bottom: 30, left: 100},
+    width = 960 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
+
+	var x = d3.scale.ordinal()
+				.domain(amount_by_year.map(function(d) { return d.year; }))
+				.rangeRoundBands([0, width], .1);
+
+	var y = d3.scale.linear()
+				.domain([0, d3.max(amount_by_year, function(d) { return d.raw_total })])	
+				.rangeRound([height, 0]);
+
+	var xAxis = d3.svg.axis()
+		.scale(x)
+		.orient("bottom");
+
+	var yAxis = d3.svg.axis()
+		.scale(y)
+		.orient("left");
+
+	// Create the chart selectorz
+	var chart = d3.select(".chart")
+		.attr("width", width + margin.left + margin.right)
+		.attr("height", height + margin.top + margin.bottom)
+		.append("g")
+		.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+	// Add the axes
+	chart.append("g")
+		.attr("class", "x axis")
+		.attr("transform", "translate(0," + height + ")")
+		.call(xAxis);
+
+	chart.append("g")
+		.attr("class", "y axis")
+		.call(yAxis);
+
+	// Add the bars
+	chart.selectAll(".bar")
+		.data(amount_by_year)
+		.enter()
+		.append("rect")
+		.attr("class", "bar")
+		.attr("x", function(d) { return x(d.year); })  
+		.attr("y", function(d) { return y(d.raw_total); })
+		.attr("height", function(d) { return height - y(d.raw_total); }) 
+		.attr("width", x.rangeBand());
+
+</script>	
+{% endblock bottom_js %}
